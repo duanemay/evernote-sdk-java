@@ -25,38 +25,34 @@
  */
 package com.evernote.clients;
 
-import static org.junit.Assert.fail;
+import com.evernote.edam.userstore.UserStoreIface;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import com.evernote.edam.userstore.UserStoreIface;
+class UserStoreClientTest {
 
-public class UserStoreClientTest {
+    @Test
+    void testWrappedMethods() {
+        Method[] originalMethods = UserStoreIface.class.getDeclaredMethods();
+        Method[] wrappedMethods = UserStoreClient.class.getDeclaredMethods();
 
-  @Test
-  public void testWrappedMethods() {
-    Method[] originalMethods = UserStoreIface.class.getDeclaredMethods();
-    Method[] wrappedMethods = UserStoreClient.class.getDeclaredMethods();
+        Set<String> originalMethodNames = new HashSet<>();
+        for (Method m : originalMethods) {
+            originalMethodNames.add(m.getName());
+        }
 
-    Set<String> originalMethodNames = new HashSet<String>();
-    for (Method m : originalMethods) {
-      originalMethodNames.add(m.getName());
+        for (Method m : wrappedMethods) {
+            originalMethodNames.remove(m.getName());
+        }
+
+        if (!originalMethodNames.isEmpty()) {
+            fail("Following methods are not implemented: " + originalMethodNames);
+        }
     }
-
-    for (Method m : wrappedMethods) {
-      if (originalMethodNames.contains(m.getName())) {
-        originalMethodNames.remove(m.getName());
-      }
-    }
-
-    if (!originalMethodNames.isEmpty()) {
-      fail("Following methods are not implemented: "
-          + originalMethodNames.toString());
-    }
-  }
 
 }

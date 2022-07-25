@@ -25,18 +25,18 @@
  */
 package com.evernote.clients;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isA;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.evernote.auth.EvernoteAuth;
 import com.evernote.auth.EvernoteService;
@@ -47,7 +47,7 @@ import com.evernote.edam.type.NotebookRestrictions;
 import com.evernote.edam.type.SharedNotebook;
 import com.evernote.edam.userstore.AuthenticationResult;
 
-public class LinkedNoteStoreClientTest {
+class LinkedNoteStoreClientTest {
 
   // If set, test with actual API calls
   String token = null;
@@ -55,8 +55,8 @@ public class LinkedNoteStoreClientTest {
   LinkedNotebook linkedNotebook = null;
   LinkedNoteStoreClient client;
 
-  @Before
-  public void initialize() throws Exception {
+  @BeforeEach
+  void initialize() throws Exception {
     if (token == null) {
       client = mock(LinkedNoteStoreClient.class);
 
@@ -64,28 +64,28 @@ public class LinkedNoteStoreClientTest {
 
       Note createdNote = new Note();
       createdNote.setGuid("guid");
-      stub(noteStoreClient.createNote(isA(Note.class))).toReturn(createdNote);
+      when(noteStoreClient.createNote(any(Note.class))).thenReturn(createdNote);
 
       NotebookRestrictions restrictions = new NotebookRestrictions();
       restrictions.setNoCreateNotes(false);
 
       Notebook createdNotebook = new Notebook();
       createdNotebook.setRestrictions(restrictions);
-      stub(noteStoreClient.createNotebook(isA(Notebook.class))).toReturn(
+      when(noteStoreClient.createNotebook(any(Notebook.class))).thenReturn(
           createdNotebook);
-      stub(noteStoreClient.getNotebook(anyString())).toReturn(createdNotebook);
+      when(noteStoreClient.getNotebook(anyString())).thenReturn(createdNotebook);
 
       SharedNotebook sharedNotebook = new SharedNotebook();
-      stub(noteStoreClient.getSharedNotebookByAuth()).toReturn(sharedNotebook);
+      when(noteStoreClient.getSharedNotebookByAuth()).thenReturn(sharedNotebook);
 
       NoteStoreClient personalClient = mock(NoteStoreClient.class);
 
-      List<LinkedNotebook> listLinkedNotebooks = new ArrayList<LinkedNotebook>();
-      stub(personalClient.listLinkedNotebooks()).toReturn(listLinkedNotebooks);
+      List<LinkedNotebook> listLinkedNotebooks = new ArrayList<>();
+      when(personalClient.listLinkedNotebooks()).thenReturn(listLinkedNotebooks);
 
       LinkedNotebook createdLinkedNotebook = new LinkedNotebook();
-      stub(personalClient.createLinkedNotebook(isA(LinkedNotebook.class)))
-          .toReturn(createdLinkedNotebook);
+      when(personalClient.createLinkedNotebook(any(LinkedNotebook.class)))
+          .thenReturn(createdLinkedNotebook);
 
       AuthenticationResult authenticationResult = new AuthenticationResult();
 
@@ -101,7 +101,7 @@ public class LinkedNoteStoreClientTest {
   }
 
   @Test
-  public void testCreateNote() throws Exception {
+  void testCreateNote() throws Exception {
     Note note = new Note();
     note.setTitle("LinkedNoteStoreClientTest#testCreateNote");
     note.setContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -112,19 +112,19 @@ public class LinkedNoteStoreClientTest {
   }
 
   @Test
-  public void testListNotebooks() throws Exception {
+  void testListNotebooks() throws Exception {
     List<LinkedNotebook> listLinkedNotebooks = client.listNotebooks();
     assertNotNull(listLinkedNotebooks);
   }
 
   @Test
-  public void testGetCorrespondingNotebook() throws Exception {
+  void testGetCorrespondingNotebook() throws Exception {
     Notebook notebook = client.getCorrespondingNotebook(linkedNotebook);
     assertNotNull(notebook);
   }
 
   @Test
-  public void testIsNotebookWritable() throws Exception {
+  void testIsNotebookWritable() throws Exception {
     boolean isNotebookWritable = client.isNotebookWritable(linkedNotebook);
     assertTrue(isNotebookWritable);
   }

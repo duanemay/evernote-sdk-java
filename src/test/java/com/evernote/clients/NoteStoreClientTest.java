@@ -25,42 +25,34 @@
  */
 package com.evernote.clients;
 
-import static org.junit.Assert.fail;
+import com.evernote.edam.notestore.NoteStoreIface;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import com.evernote.edam.notestore.NoteStoreIface;
+class NoteStoreClientTest {
 
-public class NoteStoreClientTest {
+    @Test
+    void testWrappedMethods() {
+        Method[] originalMethods = NoteStoreIface.class.getDeclaredMethods();
+        Method[] wrappedMethods = NoteStoreClient.class.getDeclaredMethods();
 
-  final Set<String> IGNORE_METHODS = new HashSet<String>(Arrays.asList(
-      "getOutputProtocol", "getInputProtocol"));
+        Set<String> originalMethodNames = new HashSet<>();
+        for (Method m : originalMethods) {
+            originalMethodNames.add(m.getName());
+        }
 
-  @Test
-  public void testWrappedMethods() {
-    Method[] originalMethods = NoteStoreIface.class.getDeclaredMethods();
-    Method[] wrappedMethods = NoteStoreClient.class.getDeclaredMethods();
+        for (Method m : wrappedMethods) {
+            originalMethodNames.remove(m.getName());
+        }
 
-    Set<String> originalMethodNames = new HashSet<String>();
-    for (Method m : originalMethods) {
-      originalMethodNames.add(m.getName());
+        if (!originalMethodNames.isEmpty()) {
+            fail("Following methods are not implemented: " + originalMethodNames);
+        }
     }
-
-    for (Method m : wrappedMethods) {
-      if (originalMethodNames.contains(m.getName())) {
-        originalMethodNames.remove(m.getName());
-      }
-    }
-
-    if (!originalMethodNames.isEmpty()) {
-      fail("Following methods are not implemented: "
-          + originalMethodNames.toString());
-    }
-  }
 
 }

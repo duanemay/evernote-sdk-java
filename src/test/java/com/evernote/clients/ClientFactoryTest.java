@@ -25,18 +25,18 @@
  */
 package com.evernote.clients;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.evernote.auth.EvernoteAuth;
 import com.evernote.auth.EvernoteService;
 
-public class ClientFactoryTest {
+class ClientFactoryTest {
 
   @Test
-  public void testGenerateUserAgent() {
+  void testGenerateUserAgent() {
     EvernoteAuth auth = new EvernoteAuth(
         EvernoteService.SANDBOX,
         "S=s1:U=11a1a:E=222b22bbb22:C=33c333c3333:P=4dd:A=en-devtoken:V=2:H=e5555ee5ee55555555eee555ee55e5ee");
